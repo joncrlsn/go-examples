@@ -1,0 +1,86 @@
+import (
+    "./esb" // the full ESBCredentials type is defined elsewhere
+    ...
+)
+
+// Sample data
+var ESBUsername = "user@esb"
+var ESBPassword = "changeme"
+var ClientGUID = "CA55E77E-1962-0000-2014-DEC1A551F1ED"
+
+type Envelope struct {
+    XMLName       xml.Name       `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
+    EncodingStyle string         `xml:"http://schemas.xmlsoap.org/soap/envelope/ encodingStyle,attr"`
+    Header        EnvelopeHeader `xml:"http://schemas.xmlsoap.org/soap/envelope/ Header"`
+    Body          EnvelopeBody   `xml:"http://schemas.xmlsoap.org/soap/envelope/ Body"`
+}
+
+// This is fixed independently of whatever port we call
+type EnvelopeHeader struct {
+    Credentials *esb.ESBCredentials `xml:"http://esb/definitions ESBCredentials"`
+}
+
+// This has to change depending on which service we invoke
+type EnvelopeBody struct {
+    Payload interface{} // the empty interface lets us assign any other type
+}
+
+type QueryEntity struct {
+    // having an XMLName field lets you re-tag (and rename) the Payload
+    XMLName       xml.Name `xml:"http://esb/queryservice QueryEntity"`
+    ClientGUID   *string
+    QueryString  *string
+}
+
+
+
+func CreateQuery(query string) *Envelope {
+    // Build the envelope (this could be farmed out to another func)
+    retval := &Envelope{}
+    retval.EncodingStyle = "http://schemas.xmlsoap.org/soap/encoding/"
+    retval.Header = EnvelopeHeader{}
+    retval.Header.Credentials = &esb.ESBCredentials{}
+    retval.Header.Credentials.ESBUsername = &ESBUsername
+    retval.Header.Credentials.ESBPassword = &ESBPassword
+
+    // Build the payload that matches our desired SOAP port
+    payload := QueryEntity{}
+    payload.ClientGUID = &HouseholdId
+    payload.QueryString = query
+
+    // ...and in the darkness bind it
+    retval.Body.Payload = payload
+    return retval
+}
+
+
+func InvokePitsOfDarkness() {
+    ...
+    buffer := &bytes.Buffer{}
+    encoder := xml.NewEncoder(buffer)
+    envelope := CreateQuery("wally")
+    err := encoder.Encode(envelope)
+    // this is just a test, so let's panic freely
+    if err != nil {
+        log.Panic("Could not encode request")
+    }
+
+    client := http.Client{}
+    req, err := http.NewRequest("POST", "https://esb/service", buffer)
+    if err != nil {
+        log.Panic(err.Error())
+    }
+
+    req.Header.Add("SOAPAction", "\"http://esb/service/QueryEntity\"")
+    req.Header.Add("Content-Type", "text/xml")
+    resp, err := client.Do(req)
+    if err != nil {
+        log.Panic(err.Error())
+    }
+    if resp.StatusCode != 200 {
+        log.Panic(resp.Status)
+    }
+
+    result, err := GoElsewhereToDecode(resp.Body)
+    ...
+}
