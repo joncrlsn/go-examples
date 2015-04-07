@@ -1,3 +1,9 @@
+//
+// guid is an example of a pseudo globally unique ID that can be stored in a 64-bit signed integer.
+// There is a small chance two people could generate the same GUID but it is very small.  They
+// would have to generate the same random value out of 16 million possible in the same 100th
+// of a second.
+//
 package main
 
 import (
