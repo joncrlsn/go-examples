@@ -1,6 +1,6 @@
 //
 // hashsalt provides methods to hash a password with a random salt and then
-// put the two together so the hash-salt can be compared with an entered password .
+// put the two together so the hash-salt can be compared with an entered password.
 //
 package main
 
