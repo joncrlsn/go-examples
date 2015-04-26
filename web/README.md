@@ -5,17 +5,17 @@ This example web application is written in Go (GoLang).  It will be used as a st
 ### Take it for a spin:
 * Run `go build`
 * Run `./web`
-* Open browser to `http://localhost:8080/secure`
+* Open browser to `http://localhost:8080/auth`
   * notice how it redirects you to https (you will have to set an exception to accept the certificate)
   * when it asks for credentials enter joe@example.com and supersecret
 
 ### It currently does these things:
 * Redirects to https if http is used
 * When started, it builds/rebuilds a sqlite3 user table with example users and passwords
-* Provides a couple of resources (/info and /secure)
-  * go to http://localhost:8080/secure
-  * username: joe@example.com password: supersecret
-* HTTP handlers can be wrapped with Basic authentication checks
+* Provides a couple of resources (/info and /auth)
+  * go to http://localhost:8080/auth
+  * enter username: joe@example.com password: supersecret
+* Request handlers can be wrapped with Basic authentication checks
 
 ### It will eventually do these things
 * Provide REST resources that:

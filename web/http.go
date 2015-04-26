@@ -12,6 +12,18 @@ import (
 	"strings"
 )
 
+// Taken from http://blog.golang.org/error-handling-and-go
+// errorHandler adds a ServeHttp method to the errorHandler function
+type errorHandler func(http.ResponseWriter, *http.Request) error
+
+// Adds a ServeHttp method to every errorHandler function
+func (fn errorHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if err := fn(w, r); err != nil {
+		log.Println("Error handling request", err)
+		http.Error(w, "Internal Server Error.  Check logs for actual error", 500)
+	}
+}
+
 // startWebServer does as the name implies.  If a certFile and keyFile are given then
 // the HTTPS port is also used and HTTP is redirected to HTTPS.
 func startWebServer(httpPort int, httpsPort int, certFile string, keyFile string) {
@@ -19,9 +31,10 @@ func startWebServer(httpPort int, httpsPort int, certFile string, keyFile string
 	//
 	// Setup business logic handlers
 	//
-	http.HandleFunc("/info", _infoHandler)
-	http.HandleFunc("/secure", _authenticateBasic(_infoHandler))
+	http.Handle("/info", errorHandler(_viewInfo))
+	http.Handle("/auth", errorHandler(_authBasic(_viewInfo)))
 	fmt.Println("  /info returns information about the request\n    (try https://localhost:8443/info?x=123&y=456 )")
+	fmt.Println("  /auth also returns information about the request, but it requires authentication\n    (try https://localhost:8443/auth?x=123&y=456 )")
 
 	//
 	// Start listening
@@ -46,9 +59,9 @@ func startWebServer(httpPort int, httpsPort int, certFile string, keyFile string
 	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(httpPort), nil))
 }
 
-// _authenticateBasic wraps a handler with another one that requires BASIC HTTP authentication
-func _authenticateBasic(handler func(http.ResponseWriter, *http.Request)) func(w http.ResponseWriter, req *http.Request) {
-	return func(w http.ResponseWriter, req *http.Request) {
+// _authBasic wraps a request handler with another one that requires BASIC HTTP authentication
+func _authBasic(handler func(http.ResponseWriter, *http.Request) error) func(w http.ResponseWriter, req *http.Request) error {
+	return func(w http.ResponseWriter, req *http.Request) error {
 		//
 		// Ensure request has an "Authorization" header (needed for "Basic" authentication)
 		// (That header is misnamed. It should be Authentication, but I don't make the specs)
@@ -59,7 +72,7 @@ func _authenticateBasic(handler func(http.ResponseWriter, *http.Request)) func(w
 			// Request the "Authorization" header
 			w.Header().Set("WWW-Authenticate", `Basic realm="go-example-web"`)
 			http.Error(w, "Access Denied", http.StatusUnauthorized)
-			return
+			return nil
 		}
 
 		//
@@ -68,18 +81,19 @@ func _authenticateBasic(handler func(http.ResponseWriter, *http.Request)) func(w
 		user, err := data.Authenticate(db, username, password)
 		if err != nil {
 			log.Println("Error authenticating user", username, err)
+			return err
 		}
 		if user.UserId == 0 {
 			// User authentication failed
 			w.Header().Set("WWW-Authenticate", `Basic realm="go-example-web"`)
 			http.Error(w, "Access Denied", http.StatusUnauthorized)
-			return
+			return nil
 		}
 
 		//
 		// The credentials match, so run the wrapped handler
 		//
-		handler(w, req)
+		return handler(w, req)
 	}
 }
 
@@ -93,8 +107,8 @@ func _redirectToHttps(httpPort int, httpsPort int) func(w http.ResponseWriter, r
 	}
 }
 
-// _infoHandler is an example handler that returns info about the request in HTML format
-func _infoHandler(w http.ResponseWriter, r *http.Request) {
+// _viewInfo is an example handler that returns info about the request in HTML format
+func _viewInfo(w http.ResponseWriter, r *http.Request) error {
 	if r.Method == "GET" {
 		//fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
 		fmt.Fprintf(w, `<html>
@@ -119,4 +133,5 @@ func _infoHandler(w http.ResponseWriter, r *http.Request) {
 		r.Header.Get("Authorization") = %s<br>
 		</html>`, r.Method, r.RequestURI, r.Host, r.Header, r.RemoteAddr, r.MultipartForm, r.PostForm, r.Form, r.URL, r.URL.Host, r.URL.Path, r.URL.RawQuery, r.URL.Scheme, r.URL.Opaque, r.URL.User, r.URL.Fragment, r.Header.Get("Authorization"))
 	}
+	return nil
 }

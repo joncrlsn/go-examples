@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	//"github.com/joncrlsn/go-examples/web/api"
 	"github.com/jmoiron/sqlx"
 	"github.com/joncrlsn/go-examples/web/data"
 	"log"
@@ -21,6 +20,7 @@ var (
 	//keyFile  = ""
 )
 
+// this variable is accessed in the http.go
 var db *sqlx.DB
 
 func main() {
@@ -29,15 +29,12 @@ func main() {
 	//
 	// Setting up the database
 	//
-
 	var err error
 	db, err = setupDb(dbType, dbUrl, migrateSqlPath)
 	if err != nil {
 		log.Println("Error setting up the db", err)
 		return
 	}
-
-	fmt.Println(data.UserFindByEmail(db, "joncrlsn@gmail.com"))
 
 	//
 	// Starting Web Server
