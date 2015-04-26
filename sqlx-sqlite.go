@@ -33,7 +33,7 @@ type User struct {
 func main() {
 	// this connects & tries a simple 'SELECT 1', panics on error
 	// use sqlx.Open() for sql.Open() semantics
-	db, err := sqlx.Connect("sqlite3", "deleteme.db")
+	db, err := sqlx.Connect("sqlite3", "__deleteme.db")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -122,5 +122,14 @@ func main() {
 			log.Fatalln(err)
 		}
 		fmt.Printf("Jason: %#v\n", user)
+	}
+
+	// fetch one column from the db
+	rows2, _ := db.Query("SELECT first_name FROM user WHERE last_name = 'Smith'")
+	// iterate over each row
+	for rows2.Next() {
+		var firstName string // if nullable, use the NullString type
+		err = rows2.Scan(&firstName)
+		fmt.Printf("Ben: %s\n", firstName)
 	}
 }

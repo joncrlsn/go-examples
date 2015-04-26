@@ -1,3 +1,7 @@
+//
+// This is an example of accessing Postgres using the standard database/sql API.
+// Also included is a method for dynamically converting each row to a string array.
+//
 package main
 
 import "fmt"
@@ -37,7 +41,7 @@ func readUsersStatically(db *sql.DB) {
 	panicIfError(err)
 }
 
-/* Dynamically figure out columns in the result set */
+/* Dynamically convert each row in the result set into a string array */
 func readUsersDynamically(db *sql.DB) {
 	fmt.Println("--- dynamic column retrieval ---")
 
