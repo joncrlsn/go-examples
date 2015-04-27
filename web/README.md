@@ -21,8 +21,15 @@ This example web application is written in Go (GoLang).  It will be used as a st
 * Provide REST resources that:
   * return user data as JSON (from the user table)
   * inserts and updates data in the user table
-* Web pages to display users, edit them, and create new ones
+* A Login web page
+* A "Forgot Password" web page that sends an email with a reset link
 * Prevent brute force password attack by blocking account for 20 minutes after 10 invalid passwords are tried
+
+### Pretty important to have
+* Permissions and role tables
+* A web page to display all users (if user has the right permission)
+* A web page to edit a user (user can always edit his own user)
+* A web page to create a user
 
 ### Libraries used:
 * net/http          
