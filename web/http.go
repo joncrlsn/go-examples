@@ -1,11 +1,12 @@
 //
-// Sets up the URL routing and runs the web server
+// Sets up the URL routing and starts the web server
 //
 package main
 
 import (
+	"./api"
+	"./data"
 	"fmt"
-	"github.com/joncrlsn/go-examples/web/data"
 	"log"
 	"net/http"
 	"strconv"
@@ -28,13 +29,19 @@ func (fn errorHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // the HTTPS port is also used and HTTP is redirected to HTTPS.
 func startWebServer(httpPort int, httpsPort int, certFile string, keyFile string) {
 
-	//
+	// Any static files in the www dir will be served as-is
+	http.Handle("/", http.FileServer(http.Dir("./www")))
+	fmt.Println("  /login.html returns an HTML login page\n    (try https://localhost:8080")
+
+	// REST/HTTP API handlers
+	http.Handle("/api/user", errorHandler(_authBasic(api.UserHandler)))
+	fmt.Println("  /api/user returns JSON about users in the system. requires authentication\n    (use joe@example.com/supersecret for credentials)")
+
 	// Setup business logic handlers
-	//
 	http.Handle("/info", errorHandler(_viewInfo))
 	http.Handle("/auth", errorHandler(_authBasic(_viewInfo)))
 	fmt.Println("  /info returns information about the request\n    (try https://localhost:8443/info?x=123&y=456 )")
-	fmt.Println("  /auth also returns information about the request, but it requires authentication\n    (try https://localhost:8443/auth?x=123&y=456 )")
+	fmt.Println("  /auth same as above, but requires authentication\n    (use joe@example.com/supersecret for credentials)")
 
 	//
 	// Start listening

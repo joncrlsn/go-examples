@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	"github.com/joncrlsn/go-examples/web/data"
 	"log"
 )
 

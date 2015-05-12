@@ -7,7 +7,7 @@ This example web application is written in Go (GoLang).  It will be used as a st
 * Run `./web`
 * Open browser to `http://localhost:8080/auth`
   * notice how it redirects you to https (you will have to set an exception to accept the certificate)
-  * when it asks for credentials enter joe@example.com and supersecret
+  * when it asks for credentials enter `joe@example.com` and `supersecret`
 
 ### It currently does these things:
 * Redirects to https if http is used
@@ -21,15 +21,16 @@ This example web application is written in Go (GoLang).  It will be used as a st
 * Provide REST resources that:
   * return user data as JSON (from the user table)
   * inserts and updates data in the user table
-* A Login web page
-* A "Forgot Password" web page that sends an email with a reset link
-* Prevent brute force password attack by blocking account for 20 minutes after 10 invalid passwords are tried
+* An HTML5 Login web page
+* An HTML5 "Forgot Password" web page that sends an email with a reset link
+* A login monitor that prevents brute force password attacks by blocking account for 20 minutes after 10 invalid passwords are tried
 
 ### Pretty important to have
-* Permissions and role tables
-* A web page to display all users (if user has the right permission)
-* A web page to edit a user (user can always edit his own user)
-* A web page to create a user
+* Permission and role tables
+* A user resource (GET, PUT, POST, DELETE)
+* An HTML5 web page to display all users (if user has the right permission)
+* An HTML5 web page to edit a user (user can always edit his own user)
+* An HTML5 web page to create a user
 
 ### Libraries used:
 * net/http          
@@ -42,6 +43,7 @@ This example web application is written in Go (GoLang).  It will be used as a st
 ### I may use these libraries:
 * gorilla/mux:        go get -u github.com/gorilla/mux
 * codegansta/negroni: go get -u github.com/codegangsta/negroni
+* go-flags:           go get -u github.com/jessevdk/go-flags
 
 ### How to recreate the DB using the command-line
 migrate -url sqlite3://web.db -path ./migrations reset
