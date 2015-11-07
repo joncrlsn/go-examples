@@ -8,14 +8,18 @@ import (
 
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
-	fmt.Println(RandomString(10))
+	fmt.Println(RandomString(25))
 }
 
-// RandomString returns a random string of capital letters of the given length
+// RandomString returns a random string of letters of the given length
 func RandomString(l int) string {
 	bytes := make([]byte, l)
 	for i := 0; i < l; i++ {
-		bytes[i] = byte(RandomInt(65, 90))
+		rint := RandomInt(65, 117)
+		if rint > 90 {
+			rint = rint + 6
+		}
+		bytes[i] = byte(rint)
 	}
 	return string(bytes)
 }

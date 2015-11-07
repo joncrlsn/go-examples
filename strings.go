@@ -56,3 +56,12 @@ func convertByteArrayToString() {
 	str = string(src)
 	fmt.Println(str)
 }
+
+// iterate over the runes in a string
+func iterateOverString() {
+	str := "Hello"
+	fmt.Println()
+	for i, roon := range str {
+		fmt.Println(i, roon, string(roon))
+	}
+}

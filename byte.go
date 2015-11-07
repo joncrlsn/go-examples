@@ -14,6 +14,20 @@ var byteLf = byte(10) // line feed
 var str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\n"
 
 func main() {
+
+	fmt.Println(" == by numeric value")
+	// Sequentially go from 32 to 128
+	for i := 32; i <= 128; i++ {
+		b := byte(i)
+		if b == byteLf {
+			fmt.Printf("byte: lf %v %b \n", b, b)
+		} else {
+			fmt.Printf("byte: %v %s %b\n", b, []byte{b}, b)
+		}
+	}
+
+	fmt.Println(" == by character")
+	// Read through the bytes in the string
 	reader := strings.NewReader(str)
 	for {
 		b, err := reader.ReadByte()
@@ -30,4 +44,5 @@ func main() {
 			fmt.Printf("byte: %s %b %v\n", []byte{b}, b, b)
 		}
 	}
+
 }

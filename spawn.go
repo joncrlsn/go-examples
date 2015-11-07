@@ -1,5 +1,9 @@
 package main
 
+//
+// Example of spawning external shell commands
+//
+
 import "fmt"
 import "os/exec"
 import "io/ioutil"
