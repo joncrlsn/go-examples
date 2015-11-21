@@ -42,7 +42,7 @@ func Guid() int64 {
 	timePortion := now - janFirst2015
 	fmt.Printf("== now - jan2015 100ths:\n%v\n%b\n", timePortion, timePortion)
 
-	// bitshift time portion by 24 bits to the left
+	// bitshift time portion by 24 bits to the left (we are only losing zero bits)
 	timePortion = timePortion << 24
 	fmt.Printf("== time shifted 24 bits:\n%v\n%b\n", timePortion, timePortion)
 
