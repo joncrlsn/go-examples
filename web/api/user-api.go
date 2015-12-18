@@ -26,8 +26,9 @@ func UserHandler(w http.ResponseWriter, r *http.Request) error {
 }
 
 func userApiGet(w http.ResponseWriter, r *http.Request) error {
-	buf, _ := ioutil.ReadAll(r.Body())
-	json.Unmarshal(buf, &ryanne)
+	//	buf, _ := ioutil.ReadAll(r.Body())
+	//	var ryanne map[string]string
+	//	json.Unmarshal(buf, &ryanne)
 
 	res1D := &Response1{
 		Page:   101,

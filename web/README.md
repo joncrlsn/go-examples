@@ -17,6 +17,11 @@ This example web application is written in Go (GoLang).  It will be used as a st
   * enter username: joe@example.com password: supersecret
 * Request handlers can be wrapped with Basic authentication checks
 
+### Do Next
+* Absorb this:    http://blog.8thlight.com/uncle-bob/2011/09/30/Screaming-Architecture.html
+* And this:       http://blog.8thlight.com/uncle-bob/2012/08/13/the-clean-architecture.html
+* And then this:  http://manuel.kiessling.net/2012/09/28/applying-the-clean-architecture-to-go-applications/
+
 ### It will eventually do these things
 * Provide REST resources that:
   * return user data as JSON (from the user table)
@@ -24,6 +29,7 @@ This example web application is written in Go (GoLang).  It will be used as a st
 * An HTML5 Login web page
 * An HTML5 "Forgot Password" web page that sends an email with a reset link
 * A login monitor that prevents brute force password attacks by blocking account for 20 minutes after 10 invalid passwords are tried
+* An HTML5 index page that provides links to REST resources
 
 ### Pretty important to have
 * Permission and role tables
@@ -34,6 +40,7 @@ This example web application is written in Go (GoLang).  It will be used as a st
 
 ### Libraries used:
 * net/http          
+* http://godoc.org/golang.org/x/crypto/bcrypt - for hash/salting passwords
 * https://github.com/jmoiron/sqlx - maps rows to objects
 * https://github.com/mattes/migrate - handles database migration
 * https://github.com/stvp/assert - assertions for testing
@@ -41,7 +48,7 @@ This example web application is written in Go (GoLang).  It will be used as a st
 * Angular JS for browser->server interactions
 
 ### I may use these libraries:
-* gorilla/mux:        go get -u github.com/gorilla/mux
+* httprouter:         go get -u github.com/julienschmidt/httprouter
 * codegansta/negroni: go get -u github.com/codegangsta/negroni
 * go-flags:           go get -u github.com/jessevdk/go-flags
 

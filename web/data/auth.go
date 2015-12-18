@@ -28,7 +28,7 @@ func SavePassword(db *sqlx.DB, email string, password string) (err error) {
 		err = errors.New("email not found")
 	} else {
 		var hashedPassword string
-		hashedPassword, err = misc.HashAndSaltPassword(password)
+		hashedPassword, err = misc.HashPassword(password)
 		if err == nil {
 			_, err = db.Exec(updatePasswordByUserId, hashedPassword, userId)
 		}

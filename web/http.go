@@ -1,12 +1,16 @@
 //
 // Sets up the URL routing and starts the web server
 //
+// Copyright (c) 2015 Jon Carlson.  All rights reserved.
+// Use of this source code is governed by the MIT
+// license that can be found in the LICENSE file.
+//
 package main
 
 import (
-	"./api"
-	"./data"
 	"fmt"
+	"github.com/joncrlsn/go-examples/web/api"
+	"github.com/joncrlsn/go-examples/web/data"
 	"log"
 	"net/http"
 	"strconv"
@@ -14,7 +18,7 @@ import (
 )
 
 // Taken from http://blog.golang.org/error-handling-and-go
-// errorHandler adds a ServeHttp method to the errorHandler function
+// errorHandler adds a ServeHttp method to every errorHandler function
 type errorHandler func(http.ResponseWriter, *http.Request) error
 
 // Adds a ServeHttp method to every errorHandler function
@@ -31,7 +35,7 @@ func startWebServer(httpPort int, httpsPort int, certFile string, keyFile string
 
 	// Any static files in the www dir will be served as-is
 	http.Handle("/", http.FileServer(http.Dir("./www")))
-	fmt.Println("  /login.html returns an HTML login page\n    (try https://localhost:8080")
+	fmt.Println("  /login.html is self-explanatory\n    (try https://localhost:8080)")
 
 	// REST/HTTP API handlers
 	http.Handle("/api/user", errorHandler(_authBasic(api.UserHandler)))
