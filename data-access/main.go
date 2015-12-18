@@ -7,10 +7,9 @@ package main
 //
 
 import (
-	"log"
-
 	"github.com/joncrlsn/go-examples/data-access/svc"
 	_ "github.com/mattn/go-sqlite3"
+	"log"
 )
 
 var dbType = "sqlite3"
@@ -27,7 +26,7 @@ func main() {
 	db, err := setupDb(dbType, dbUrl, migrateSqlPath)
 	if err != nil || db == nil {
 		log.Println("Error setting up the db", err)
-		return
+		return ""
 	}
 
 	//

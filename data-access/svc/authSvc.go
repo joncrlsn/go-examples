@@ -41,34 +41,34 @@ type AuthSvc struct {
 //
 // 	return err // err may be nil
 // }
-//
-// // When successful, the returned user will have a non-negative UserId.
-// func Authenticate(db *sqlx.DB, email string, testPassword string) (user User, err error) {
-// 	// Find the hashed password for the given email
-// 	var rows *sql.Rows
-// 	rows, err = db.Query(findUserIdAndPasswordByEmail, email)
-// 	if err != nil {
-// 		return
-// 	}
-// 	for rows.Next() {
-// 		var userId int
-// 		var hashedPassword sql.NullString
-// 		err = rows.Scan(&userId, &hashedPassword)
-// 		if err != nil {
-// 			log.Println("Error in Scan", err)
-// 		} else if userId == 0 {
-// 			//fmt.Println("userId == 0.  user not found")
-// 		} else if hashedPassword.Valid {
-// 			if misc.ComparePassword(testPassword, hashedPassword.String) {
-// 				// We found a match so find the user
-// 				user, err = UserFindById(db, userId)
-// 			} else {
-// 				log.Println("Password mismatched for email", email)
-// 			}
-// 		}
-// 		rows.Close()
-// 	}
-//
-// 	// return the user and error
-// 	return
-// }
+
+// Authenticate method... When successful, the returned user will have a non-negative UserId.
+func (svc AuthSvc) Authenticate(email string, testPassword string) (user User, err error) {
+	// Find the hashed password for the given email
+	var rows *sql.Rows
+	rows, err = svc.userDao.findUserIdAndPasswordByEmail(email)
+	if err != nil {
+		return
+	}
+	for rows.Next() {
+		var userId int
+		var hashedPassword sql.NullString
+		err = rows.Scan(&userId, &hashedPassword)
+		if err != nil {
+			log.Println("AuthSvc.Authenticate() Error in Scan:", err)
+		} else if userId == 0 {
+			log.Println("AuthSvc.Authenticate() user not found for email:", email)
+		} else if hashedPassword.Valid {
+			if misc.ComparePassword(testPassword, hashedPassword.String) {
+				// We found a match so find the user
+				user, err = svc.userDao.findById(userId)
+			} else {
+				log.Println("AuthSvc.Authentic() Password mismatched for email:", email)
+			}
+		}
+		rows.Close()
+	}
+
+	// return the user and error
+	return user, err
+}

@@ -7,8 +7,8 @@ CREATE TABLE user (
     first_name VARCHAR(80)  DEFAULT '',
     last_name  VARCHAR(80)  DEFAULT '',
     email      VARCHAR(250) DEFAULT '',
-    password   VARCHAR(250) DEFAULT NULL,
-    org_id     BIGINT       DEFAULT NULL
+    password   VARCHAR(250) DEFAULT '',
+    org_id     BIGINT       DEFAULT 0 
 );
 
 CREATE TABLE org (
