@@ -9,8 +9,26 @@ import (
 )
 
 func main() {
-	regexp1()
-	regexp2()
+	multilineRegexp()
+	//regexp1()
+	//regexp2()
+}
+
+func multilineRegexp() {
+	fmt.Println("--- multine regexp ---")
+	str := `
+	CREATE OR REPLACE FUNCTION himom()
+	RETURNS number
+	LANGUAGE SQL
+	AS $himom$
+	  SELECT 'himom';
+	$hidad$;
+	`
+	//r := regexp.MustCompile(`(?is)CREATE.*\s+AS\s+.* (\$[[:alnum:]]*\$)`)
+	r := regexp.MustCompile(`(?is)CREATE.*\s+AS\s+((?U).*)(\$[^\$]*\$)`)
+
+	match := r.FindStringSubmatch(str)
+	fmt.Printf("%q\n", match)
 }
 
 func regexp1() {
