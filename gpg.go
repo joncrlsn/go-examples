@@ -13,14 +13,12 @@ import (
 // $ gpg --gen-key
 // ensure you specify correct paths and passphrase
 
-const (
-	mySecretString     = "this is so very secret!"
-	prefix, passphrase = "/home/jon/", "xxxxxxxxx"
-	secretKeyring      = prefix + ".gnupg/secring.gpg"
-	publicKeyring      = prefix + ".gnupg/pubring.gpg"
-)
-
 func main() {
+
+	mySecretString := "this is so very secret!"
+	prefix, passphrase := "/home/jon/", "xxxxxxxxx"
+	secretKeyring := prefix + ".gnupg/secring.gpg"
+	publicKeyring := prefix + ".gnupg/pubring.gpg"
 
 	// Encrypt string
 
@@ -30,17 +28,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	decBytes, err := DecryptBytes(bytes)
+	decBytes, err := DecryptBytes(bytes, secretKeyring)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Println("decrypted stuff", string(decBytes))
 
-	encStr, err := EncryptBytes(mySecretString)
+	encStr, err := EncryptBytes(mySecretString, publicKeyring)
 	if err != nil {
 		log.Fatal(err)
 	}
-	decStr, err := DecryptBase64ToString(encStr)
+	decStr, err := DecryptBytes(encStr, secretKeyring)
 	if err != nil {
 		log.Fatal(err)
 	}
