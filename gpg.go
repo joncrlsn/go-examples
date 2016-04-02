@@ -22,6 +22,10 @@ const (
 
 func main() {
 
+	// Encrypt string
+
+	// Decrypt string
+
 	bytes, err := ioutil.ReadFile(prefix + ".password-store/Jon/facebook.com:jon_carlson@writeme.com.gpg")
 	if err != nil {
 		log.Fatal(err)
