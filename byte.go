@@ -28,6 +28,7 @@ func main() {
 
 	fmt.Println(" == by character")
 	// Read through the bytes in the string
+	// See strings.go for example of reading through the runes in a string
 	reader := strings.NewReader(str)
 	for {
 		b, err := reader.ReadByte()
@@ -44,5 +45,9 @@ func main() {
 			fmt.Printf("byte: %s %b %v\n", []byte{b}, b, b)
 		}
 	}
+
+	//
+	// See strings.go for example of converting byte array to string and back
+	//
 
 }

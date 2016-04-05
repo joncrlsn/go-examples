@@ -45,9 +45,12 @@ func main() {
 	// package docs.
 
 	convertByteArrayToString()
+	convertStringToByteArray()
+	stringBytesPrintingExample()
 }
 
 func convertByteArrayToString() {
+	fmt.Println("======== convertByteArrayToString")
 	src := []byte{'h', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd'}
 
 	str := string(src[:])
@@ -55,6 +58,48 @@ func convertByteArrayToString() {
 
 	str = string(src)
 	fmt.Println(str)
+}
+
+func convertStringToByteArray() {
+	fmt.Println("======== convertStringToByteArray")
+	str := "hello world"
+	byteArray := []byte(str)
+
+	// that's it, all the rest is display
+	fmt.Printf("String as is: %s\n", str)
+	fmt.Printf("String as hex: % x\n", str)
+	fmt.Printf("as hex: % x\n", str)
+	for i := 0; i < len(byteArray); i++ {
+		fmt.Printf("%x ", byteArray[i])
+	}
+	fmt.Println()
+}
+
+// stringPrinting from https://blog.golang.org/strings
+func stringBytesPrintingExample() {
+	fmt.Println("======== stringBytesPrintingExample")
+	const sample = "\xbd\xb2\x3d\xbc\x20\xe2\x8c\x98"
+
+	fmt.Println("Println:")
+	fmt.Println(sample)
+
+	fmt.Println("Byte loop:")
+	for i := 0; i < len(sample); i++ {
+		fmt.Printf("%x ", sample[i])
+	}
+	fmt.Printf("\n")
+
+	fmt.Println("Printf with %x:")
+	fmt.Printf("%x\n", sample)
+
+	fmt.Println("Printf with % x:")
+	fmt.Printf("% x\n", sample)
+
+	fmt.Println("Printf with %q:")
+	fmt.Printf("%q\n", sample)
+
+	fmt.Println("Printf with %+q:")
+	fmt.Printf("%+q\n", sample)
 }
 
 // iterate over the runes in a string

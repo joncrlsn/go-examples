@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"encoding/base64"
 	"golang.org/x/crypto/openpgp"
 	"io/ioutil"
 	"log"
@@ -20,30 +19,31 @@ func main() {
 	secretKeyring := prefix + ".gnupg/secring.gpg"
 	publicKeyring := prefix + ".gnupg/pubring.gpg"
 
+	if 1 == 1 {
+		bytes, err := ioutil.ReadFile(prefix + ".password-store/jon/facebook:jon_carlson@writeme.com.gpg")
+		if err != nil {
+			log.Fatal(err)
+		}
+		decBytes, err := DecryptBytes(bytes, secretKeyring, passphrase)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println("decrypted stuff", string(decBytes))
+	}
+
 	// Encrypt string
+	encBytes, err := EncryptBytes([]byte(mySecretString), publicKeyring)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Decrypt string
+	decBytes, err := DecryptBytes(encBytes, secretKeyring, passphrase)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	bytes, err := ioutil.ReadFile(prefix + ".password-store/Jon/facebook.com:jon_carlson@writeme.com.gpg")
-	if err != nil {
-		log.Fatal(err)
-	}
-	decBytes, err := DecryptBytes(bytes, secretKeyring)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("decrypted stuff", string(decBytes))
-
-	encStr, err := EncryptBytes(mySecretString, publicKeyring)
-	if err != nil {
-		log.Fatal(err)
-	}
-	decStr, err := DecryptBytes(encStr, secretKeyring)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// should be done
-	log.Println("Decrypted Secret:", decStr)
+	log.Println("Decrypted Secret:", string(decBytes))
 }
 
 func EncryptBytes(origBytes []byte, pubKeyringFile string) ([]byte, error) {
@@ -53,32 +53,32 @@ func EncryptBytes(origBytes []byte, pubKeyringFile string) ([]byte, error) {
 	defer keyringFileBuffer.Close()
 	entityList, err := openpgp.ReadKeyRing(keyringFileBuffer)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	// encrypt string
 	buf := new(bytes.Buffer)
 	w, err := openpgp.Encrypt(buf, entityList, nil, nil, nil)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	_, err = w.Write(origBytes)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	err = w.Close()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	encryptedBytes, err := ioutil.ReadAll(buf)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	return encryptedBytes, nil
 }
 
-func DecryptBytes(encBytes []byte, privKeyringFile string) ([]byte, error) {
+func DecryptBytes(encBytes []byte, privKeyringFile string, passphrase string) ([]byte, error) {
 
 	// init some vars
 	var entity *openpgp.Entity
