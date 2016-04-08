@@ -5,8 +5,8 @@
 package main
 
 import (
-	"code.google.com/p/go.crypto/ssh/terminal"
 	"fmt"
+	"golang.org/x/crypto/ssh/terminal"
 	"os"
 )
 
