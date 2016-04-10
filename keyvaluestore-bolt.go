@@ -28,7 +28,7 @@ func main() {
 		fmt.Printf("Error creating bucket: %s", err)
 	}
 
-	// Put a string to the bucket
+	// Put a string in the bucket
 	err = db.PutString(bucket, "answer", "42")
 	if err != nil {
 		fmt.Printf("Error putting to bucket: %s", err)
