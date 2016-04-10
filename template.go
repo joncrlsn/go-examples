@@ -5,10 +5,12 @@ import (
 	templ "text/template"
 )
 
+// Context is used by the template
 type Context struct {
 	People []Person
 }
 
+// Person represents, well, a person
 type Person struct {
 	Name   string //exported field since it begins with a capital letter
 	Senior bool

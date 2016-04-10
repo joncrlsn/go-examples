@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	SALT_SIZE      = 32
+	saltSize       = 32
 	secretPassword = "hello, my name is inigo montoya"
 )
 
@@ -32,7 +32,7 @@ func main() {
 
 // makeSalt generates a random salt
 func makeSalt() ([]byte, error) {
-	salt := make([]byte, SALT_SIZE, SALT_SIZE)
+	salt := make([]byte, saltSize, saltSize)
 	_, err := io.ReadFull(rand.Reader, salt)
 	if err != nil {
 		return nil, err
@@ -86,7 +86,7 @@ func ComparePassword(testPassword string, hashSaltBase64 string) bool {
 	}
 
 	// Split out the salt
-	salt := bytes[len(bytes)-SALT_SIZE:]
+	salt := bytes[len(bytes)-saltSize:]
 
 	// Hash the test password with the same salt used to hash the real password
 	testHashSaltBase64 := HashPassword(testPassword, salt)

@@ -11,7 +11,7 @@ func main() {
 	flag.IntVar(&port, "port", 5432, "database port")
 	flag.Parse()
 	fmt.Printf("host = %s\n", *hostPtr)
-	fmt.Printf("port = %s\n", port)
+	fmt.Printf("port = %d\n", port)
 	fmt.Println("all args:", os.Args)
 	fmt.Println("remaining args:", flag.Args())
 	fmt.Printf("remaining args: %v\n", flag.Args())

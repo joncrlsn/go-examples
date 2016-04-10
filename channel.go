@@ -31,7 +31,7 @@ func main() {
 
 func fillChannel(c chan<- Org) {
 	for i := 0; i < 8; i++ {
-		org := Org{id: int16(i), name: fmt.Sprintf("org{}", i)}
+		org := Org{id: int16(i), name: fmt.Sprintf("org%d", i)}
 		c <- org
 	}
 	// Tell the receiver that we're done sending

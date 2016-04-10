@@ -89,7 +89,7 @@ func readUsersDynamically(db *sql.DB) {
 				//fmt.Println("Value is an fmt.Stringer", cells[i])
 			default:
 				cells[i] = fmt.Sprintf("%v", valPtr)
-				fmt.Println("Column %s is an unhandled type: %v", columnNames[i], valueType)
+				fmt.Printf("Column %s is an unhandled type: %v", columnNames[i], valueType)
 			}
 		}
 		fmt.Println("Cells:", cells)
