@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	dirName = "prefix-queue"
+	dirName = "pqueue"
 )
 
 type MyObject struct {
@@ -19,32 +19,45 @@ type MyObject struct {
 }
 
 func main() {
-	add("friends", MyObject{"Jon", 30})
-	add("friends", MyObject{"Deb", 31})
-	getAndLog("friends")
-	getAndLog("friends")
+	add(MyObject{"Jon", 30})
+	add(MyObject{"Deb", 31})
+	add(MyObject{"Fluffy", 8})
+	add(MyObject{"Fido", 2})
+	getAndLog()
+	getAndLog()
+	getAndLog()
+	getAndLog()
 }
 
 // add adds an object to the given prefix
-func add(queueName string, obj MyObject) {
-	pq, err := goque.OpenPrefixQueue(dirName)
+func add(obj MyObject) {
+	pq, err := goque.OpenQueue(dirName)
 	if err != nil {
 		log.Panicln("Error opening queue", err)
 	}
 	defer pq.Close()
 
-	item, err := pq.EnqueueObject([]byte(queueName), obj)
+	item, err := pq.EnqueueObject(obj)
 	log.Println("item added: ", obj, item.ID)
 }
 
 // getAndLog gets an object from the queue and logs it
-func getAndLog(queueName string) MyObject {
-	pq, err := goque.OpenPrefixQueue(dirName)
+func getAndLog() MyObject {
+	pq, err := goque.OpenQueue(dirName)
 	if err != nil {
 		log.Panicln("Error opening queue", err)
 	}
 	defer pq.Close()
-	item, err := pq.Dequeue([]byte(queueName))
+
+	item, err := pq.Peek()
+	if err != nil {
+		log.Panicln("Error peeking in queue", err)
+	}
+
+	item, err = pq.Dequeue()
+	if err != nil {
+		log.Panicln("Error peeking in queue", err)
+	}
 
 	var obj MyObject
 	err = item.ToObject(&obj)
