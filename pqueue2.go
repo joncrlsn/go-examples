@@ -1,7 +1,7 @@
 package main
 
 //
-// Persistent queue
+// Persistent queue for storing an implementatino of an interface
 //
 
 import (

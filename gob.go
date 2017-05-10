@@ -16,6 +16,9 @@ type P struct {
 	Name    string
 }
 
+func (p P) Run() {
+}
+
 type Q struct {
 	X, Y *int32
 	Name string
@@ -30,15 +33,20 @@ func main() {
 	dec := gob.NewDecoder(&network) // Will read from network.
 	// Encode (send) the value.
 
-	err := enc.Encode(P{3, 4, 5, "Pythagoras"})
-	if err != nil {
-		log.Fatal("encode error:", err)
-	}
+	encode(enc, P{3, 4, 5, "Pythagoras"})
+
 	// Decode (receive) the value.
 	var q Q
-	err = dec.Decode(&q)
+	err := dec.Decode(&q)
 	if err != nil {
 		log.Fatal("decode error:", err)
 	}
 	fmt.Printf("%q: {%d,%d}\n", q.Name, *q.X, *q.Y)
+}
+
+func encode(enc *gob.Encoder, obj I) {
+	err := enc.Encode(obj)
+	if err != nil {
+		log.Fatal("encode error:", err)
+	}
 }
