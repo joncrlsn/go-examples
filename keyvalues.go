@@ -5,15 +5,22 @@ package main
 //
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
-	"github.com/boltdb/bolt"
 	"log"
 	"time"
+
+	"github.com/boltdb/bolt"
 )
 
 type KeyValueStore struct {
 	db *bolt.DB
+}
+
+type KeyValue struct {
+	Key   string
+	Value string
 }
 
 const (
@@ -46,12 +53,28 @@ func main() {
 	value, err = db.GetString(bucket, "bogus-key")
 	if err != nil {
 		if err.Error() == "DoesNotExist" {
-			fmt.Printf("Bucket %s does not contain key %s\n", bucket, "bogus-key")
+			fmt.Printf("Good work. Bucket %s does not contain key %s\n", bucket, "bogus-key")
 		} else {
 			fmt.Printf("Error getting from bucket: %s\n", err)
 		}
-	} else {
-		fmt.Println("The answer is", value)
+	}
+
+	// Put a string in the bucket
+	err = db.PutString(bucket, "jon1", "42")
+	err = db.PutString(bucket, "jon2", "43")
+	err = db.PutString(bucket, "jon3", "44")
+	if err != nil {
+		fmt.Printf("Error putting to bucket: %s", err)
+	}
+
+	kvs, err := db.GetKeyValues(bucket, "jon")
+	if err != nil {
+		fmt.Printf("Error getting from bucket: %s\n", err)
+	}
+
+	fmt.Printf("Pulled %d key values with prefix jon\n", len(kvs))
+	for _, kv := range kvs {
+		fmt.Printf("Key: %s Value: %s\n", kv.Key, kv.Value)
 	}
 }
 
@@ -95,4 +118,26 @@ func (kvs *KeyValueStore) GetString(bucket string, key string) (string, error) {
 		return "", err
 	}
 	return value, nil
+}
+
+// GetKeyValues returns the keys that match the given prefix (with their values)
+func (kvs *KeyValueStore) GetKeyValues(bucket string, keyPrefix string) ([]KeyValue, error) {
+
+	var returnValue = []KeyValue{}
+	// Partial key match example
+	kvs.db.View(func(tx *bolt.Tx) error {
+		// Assume bucket exists and has keys
+		c := tx.Bucket([]byte(bucket)).Cursor()
+
+		prefix := []byte(keyPrefix)
+		for k, v := c.Seek(prefix); k != nil && bytes.HasPrefix(k, prefix); k, v = c.Next() {
+			kv := KeyValue{string(k), string(v)}
+			//fmt.Printf("key=%s, value=%s\n", k, v)
+			returnValue = append(returnValue, kv)
+		}
+
+		return nil
+	})
+
+	return returnValue, nil
 }
