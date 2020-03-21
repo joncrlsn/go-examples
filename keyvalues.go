@@ -60,11 +60,17 @@ func main() {
 	}
 
 	// Put a string in the bucket
-	err = db.PutString(bucket, "jon1", "42")
-	err = db.PutString(bucket, "jon2", "43")
-	err = db.PutString(bucket, "jon3", "44")
-	if err != nil {
-		fmt.Printf("Error putting to bucket: %s", err)
+	if err := db.PutString(bucket, "jon1", "this is jon1"); err != nil {
+		fmt.Printf("Error %s\n", err)
+	}
+	if err := db.PutString(bucket, "jon2", "this is jon2"); err != nil {
+		fmt.Printf("Error %s\n", err)
+	}
+	if err := db.PutString(bucket, "jon3", "this is jon3"); err != nil {
+		fmt.Printf("Error %s\n", err)
+	}
+	if err := db.PutString(bucket, "jon3", "this was jon3"); err != nil {
+		fmt.Printf("Error %s\n", err)
 	}
 
 	kvs, err := db.GetKeyValues(bucket, "jon")
@@ -125,7 +131,7 @@ func (kvs *KeyValueStore) GetKeyValues(bucket string, keyPrefix string) ([]KeyVa
 
 	var returnValue = []KeyValue{}
 	// Partial key match example
-	kvs.db.View(func(tx *bolt.Tx) error {
+	err := kvs.db.View(func(tx *bolt.Tx) error {
 		// Assume bucket exists and has keys
 		c := tx.Bucket([]byte(bucket)).Cursor()
 
@@ -139,5 +145,5 @@ func (kvs *KeyValueStore) GetKeyValues(bucket string, keyPrefix string) ([]KeyVa
 		return nil
 	})
 
-	return returnValue, nil
+	return returnValue, err
 }
