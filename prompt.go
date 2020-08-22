@@ -19,7 +19,8 @@ func main() {
 	textmore, _ := reader.ReadString('\n')
 	fmt.Println("You entered:", textmore)
 
-	// Here is another way
+	// Here is another way that doesn't work
+  // if there are spaces in what you enter.
 	fmt.Print("Enter even more text: ")
 	text2 := ""
 	fmt.Scanln(&text2)
