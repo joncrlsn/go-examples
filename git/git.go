@@ -13,7 +13,7 @@ import (
 
 var semverRegex = regexp.MustCompile(`.*/([a-z]?)((\d+)\.(\d+)\.(\d+)).*`)
 
-// Git new
+// Git is a wrapper around a repository
 type Git struct {
 	repository git.Repository
 }

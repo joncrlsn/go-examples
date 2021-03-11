@@ -11,5 +11,9 @@ git add file1
 git commit -m "feat: file1"
 git tag 0.0.1
 
+echo "file2" > file2
+git add file2
+git commit -m "fix: file2"
+
 
 
